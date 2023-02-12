@@ -6,12 +6,13 @@
  * References: lecture slides & Golang documentation
  ***************************************************************************/
 
-package main	
-import {
+package main
+
+import (
 	"fmt"
-}
+)
 
-func main()  {
-	fmt.Println("Hello World, This is going to be my first golang program")
+func main() {
+	var i int = 45
+	fmt.Println("Hello World, This is going to be my first golang program", i)
 }
-
