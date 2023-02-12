@@ -9,13 +9,24 @@ import (
 )
 
 type Customers struct {
-	Customers []Customer `json:"customers"`
+	Sellers []Seller `json:sellers`
+	Buyers  []Buyer  `json:"buyers"`
 }
 
-type Customer struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"passwd"`
+type Buyer struct {
+	Name        string `json:"name"`
+	Password    string `json:"passwd"`
+	BuyerID     int    `json:buyerId`
+	ItemsBought int    `json:itemsBought`
+}
+
+type Seller struct {
+	Name        string `json:"name"`
+	Password    string `json:"passwd"`
+	SellerId    int    `json:sellerId`
+	ItemsSold   int    `json:itemsSold`
+	FeedbackPos int    `json:feedbackPos`
+	FeedbackNeg int    `json:feedbackNeg`
 }
 
 const (
@@ -24,7 +35,18 @@ const (
 	SERVER_TYPE = "tcp"
 )
 
+const RECEIVE_BUFFER = 102400
+
 var cust Customers
+
+var (
+	server net.Listener
+	err    error
+)
+
+type Request struct {
+	ReqType string `json:"reqType"`
+}
 
 func main() {
 	jsonFile, err := os.Open("customers.json")
@@ -40,24 +62,10 @@ func main() {
 
 	json.Unmarshal(byteValue, &cust)
 
-	for i := 0; i < len(cust.Customers); i++ {
-		fmt.Println(cust.Customers[i])
-	}
-
 	fmt.Println("Json loaded into memory\n\n")
-	fmt.Println("Starting Server...\n")
 
-	server, err := net.Listen(SERVER_TYPE, SERVER_HOST+":"+SERVER_PORT)
-
-	if err != nil {
-		fmt.Println("Error Listening:", err.Error())
-		os.Exit(1)
-	}
-
+	setUpListener()
 	defer server.Close()
-
-	fmt.Println("Listening on " + SERVER_HOST + ":" + SERVER_PORT + "\n")
-	fmt.Println("Waiting for client... \n")
 
 	for {
 		connection, err := server.Accept()
@@ -81,25 +89,50 @@ func main() {
 	// 	fmt.Println(cust.Customers[i])
 	// }
 
-	// marshalledBytes, _ := json.Marshal(cust)
-
 	// os.WriteFile("customers.json", marshalledBytes, fs.ModeAppend)
 }
 
 func processClient(connection net.Conn) {
-	buffer := make([]byte, 1024)
+
+	var req Request
+
+	buffer := make([]byte, RECEIVE_BUFFER)
+
 	mLen, err := connection.Read(buffer)
 
 	if err != nil {
 		fmt.Println("Error Reading:", err.Error())
 	}
 
-	fmt.Println("Received: ", string(buffer[:mLen]))
+	json.Unmarshal(buffer[:mLen], &req)
 
-	marshalledBytes, _ := json.Marshal(cust)
+	fmt.Println("Request Type is :", req.ReqType)
+
+	var marshalledBytes []byte
+
+	if req.ReqType == "getSellers" {
+		marshalledBytes, _ = json.Marshal(cust.Sellers)
+	}
+
+	if req.ReqType == "getBuyers" {
+		marshalledBytes, _ = json.Marshal(cust.Buyers)
+	}
 
 	_, err = connection.Write(marshalledBytes)
 	connection.Close()
+}
+
+func setUpListener() {
+	fmt.Println("Starting Server...\n")
+
+	server, err = net.Listen(SERVER_TYPE, SERVER_HOST+":"+SERVER_PORT)
+
+	if err != nil {
+		fmt.Println("Error Listening:", err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("Listening on " + SERVER_HOST + ":" + SERVER_PORT + "\n")
+	fmt.Println("Waiting for client... \n")
 }
 
 // func addCustomer() {

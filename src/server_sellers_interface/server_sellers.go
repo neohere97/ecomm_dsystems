@@ -20,13 +20,6 @@ type Request struct {
 	ReqType string `json:"reqType"`
 }
 
-type Buyer struct {
-	Name        string `json:"name"`
-	Password    string `json:"passwd"`
-	BuyerID     int    `json:buyerId`
-	ItemsBought int    `json:itemsBought`
-}
-
 type Seller struct {
 	Name        string `json:"name"`
 	Password    string `json:"passwd"`
@@ -37,26 +30,24 @@ type Seller struct {
 }
 
 var Sellers []Seller
-var Buyers []Buyer
 
 func main() {
 
 	getCustomerDatabases()
-	fmt.Println("Buyer Database Updated")
+	fmt.Println("Seller Database Updated")
 }
 
 func getCustomerDatabases() {
 
-	fmt.Println("Getting Buyers database...")
+	fmt.Println("Getting Sellers database...")
 	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+CUST_DATABASE_PORT)
 
 	if err != nil {
 		panic(err)
 	}
-
 	var req Request
 
-	req.ReqType = "getBuyers"
+	req.ReqType = "getSellers"
 	reqBytes, _ := json.Marshal(req)
 	_, err = connection.Write(reqBytes)
 
@@ -67,10 +58,10 @@ func getCustomerDatabases() {
 		fmt.Println("Error reading:", err.Error())
 	}
 
-	json.Unmarshal(buffer[:mLen], &Buyers)
+	json.Unmarshal(buffer[:mLen], &Sellers)
 
-	for i := 0; i < len(Buyers); i++ {
-		fmt.Printf("%v \n", (Buyers[i]))
+	for i := 0; i < len(Sellers); i++ {
+		fmt.Printf("%v \n", (Sellers[i]))
 	}
 
 	defer connection.Close()

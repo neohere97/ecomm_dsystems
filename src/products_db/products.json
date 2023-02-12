@@ -1,0 +1,34 @@
+{
+    "products":[
+        {
+            "name":"A",
+            "itemCategory":2,
+            "itemId":21,
+            "condition":"new",
+            "keywords":["A"],
+            "price":45,
+            "sellerId":1,
+            "availability":1
+        },
+        {
+            "name":"B",
+            "itemCategory":1,
+            "itemId":11,
+            "condition":"new",
+            "keywords":["A"],
+            "price":230,
+            "sellerId":1,
+            "availability":1
+        },
+        {
+            "name":"C",
+            "itemCategory":2,
+            "itemId":22,
+            "condition":"used",
+            "keywords":["A"],
+            "price":34,
+            "sellerId":1,
+            "availability":1
+        }
+    ]
+}

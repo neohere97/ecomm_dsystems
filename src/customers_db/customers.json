@@ -1,23 +1,34 @@
-{"customers":[
-{"name":"Chinmay","email":"e@email.com","passwd":"12345"},
-{"name":"Santosh","email":"santa@email.com","passwd":"789012"},
-{"name":"neo","email":"neo@neohere.in","passwd":"qt3.14"},
-{"name":"neo2","email":"neo2@neohere.in","passwd":"qtpie3.14"},
-{"name":"Chinmay","email":"e@email.com","passwd":"12345"},
-{"name":"Santosh","email":"santa@email.com","passwd":"789012"},
-{"name":"neo","email":"neo@neohere.in","passwd":"qt3.14"},
-{"name":"neo2","email":"neo2@neohere.in","passwd":"qtpie3.14"},
-{"name":"Chinmay","email":"e@email.com","passwd":"12345"},
-{"name":"Santosh","email":"santa@email.com","passwd":"789012"},
-{"name":"neo","email":"neo@neohere.in","passwd":"qt3.14"},
-{"name":"neo2","email":"neo2@neohere.in","passwd":"qtpie3.14"},
-{"name":"Chinmay","email":"e@email.com","passwd":"12345"},
-{"name":"Santosh","email":"santa@email.com","passwd":"789012"},
-{"name":"neo","email":"neo@neohere.in","passwd":"qt3.14"},
-{"name":"neo2","email":"neo2@neohere.in","passwd":"qtpie3.14"},
-{"name":"Chinmay","email":"e@email.com","passwd":"12345"},
-{"name":"Santosh","email":"santa@email.com","passwd":"789012"},
-{"name":"neo","email":"neo@neohere.in","passwd":"qt3.14"},
-{"name":"neo2","email":"neo2@neohere.in","passwd":"qtpie3.14"}
-
-]}
+{
+  "buyers": [
+    {
+      "name": "Chinmay",
+      "passwd": "12345",
+      "buyerId":123,
+      "itemsBought":0
+    },
+    {
+        "name": "ChinmayBuyer2",
+        "passwd": "12345",
+        "buyerId":123,
+        "itemsBought":0
+      }
+  ],
+  "sellers": [
+    {
+      "name": "ChinmaySeller",
+      "passwd": "12345",
+      "sellerId":213,
+      "itemsSold":0,
+      "feedbackPos":0,
+      "feedbackNeg":0
+    },
+    {
+        "name": "ChinmaySeller2",
+        "passwd": "12345",
+        "sellerId":213,
+        "itemsSold":0,
+        "feedbackPos":0,
+        "feedbackNeg":0
+      }
+  ]
+}
