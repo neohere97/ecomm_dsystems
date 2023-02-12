@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"net"
 	"os"
@@ -46,6 +47,7 @@ var (
 
 type Request struct {
 	ReqType string `json:"reqType"`
+	Data    []byte `json:"data"`
 }
 
 func main() {
@@ -76,20 +78,12 @@ func main() {
 		fmt.Println("Client Connected...")
 		go processClient(connection)
 	}
+}
 
-	// var new_cus Customer
+func update_filedb() {
+	marshalledBytes, _ := json.Marshal(cust)
 
-	// new_cus.Email = "neo2@neohere.in"
-	// new_cus.Name = "neo2"
-	// new_cus.Password = "qtpie3.14"
-
-	// cust.Customers = append(cust.Customers, new_cus)
-
-	// for i := 0; i < len(cust.Customers); i++ {
-	// 	fmt.Println(cust.Customers[i])
-	// }
-
-	// os.WriteFile("customers.json", marshalledBytes, fs.ModeAppend)
+	os.WriteFile("customers.json", marshalledBytes, fs.ModeAppend)
 }
 
 func processClient(connection net.Conn) {
@@ -106,7 +100,7 @@ func processClient(connection net.Conn) {
 
 	json.Unmarshal(buffer[:mLen], &req)
 
-	fmt.Println("Request Type is :", req.ReqType)
+	fmt.Printf("Request Type is : %v \n", req.ReqType)
 
 	var marshalledBytes []byte
 
@@ -116,6 +110,34 @@ func processClient(connection net.Conn) {
 
 	if req.ReqType == "getBuyers" {
 		marshalledBytes, _ = json.Marshal(cust.Buyers)
+	}
+
+	if req.ReqType == "addBuyer" {
+		var new_buyer Buyer
+
+		json.Unmarshal(req.Data, &new_buyer)
+
+		fmt.Printf("%v \n", new_buyer)
+
+		cust.Buyers = append(cust.Buyers, new_buyer)
+
+		marshalledBytes, _ = json.Marshal(cust.Buyers)
+
+		update_filedb()
+	}
+
+	if req.ReqType == "addSeller" {
+		var new_seller Seller
+
+		json.Unmarshal(req.Data, &new_seller)
+
+		fmt.Printf("%v \n", new_seller)
+
+		cust.Sellers = append(cust.Sellers, new_seller)
+
+		marshalledBytes, _ = json.Marshal(cust.Sellers)
+
+		update_filedb()
 	}
 
 	_, err = connection.Write(marshalledBytes)

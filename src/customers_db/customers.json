@@ -1,34 +1,15 @@
 {
-  "buyers": [
-    {
-      "name": "Chinmay",
-      "passwd": "12345",
-      "buyerId":123,
-      "itemsBought":0
-    },
-    {
-        "name": "ChinmayBuyer2",
-        "passwd": "12345",
-        "buyerId":123,
-        "itemsBought":0
-      }
-  ],
-  "sellers": [
+  "Sellers": [
     {
       "name": "ChinmaySeller",
       "passwd": "12345",
-      "sellerId":213,
-      "itemsSold":0,
-      "feedbackPos":0,
-      "feedbackNeg":0
-    },
-    {
-        "name": "ChinmaySeller2",
-        "passwd": "12345",
-        "sellerId":213,
-        "itemsSold":0,
-        "feedbackPos":0,
-        "feedbackNeg":0
-      }
+      "SellerId": 213,
+      "ItemsSold": 0,
+      "FeedbackPos": 0,
+      "FeedbackNeg": 0
+    }
+  ],
+  "buyers": [
+   
   ]
 }

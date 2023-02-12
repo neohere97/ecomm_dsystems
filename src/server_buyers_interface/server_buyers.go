@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 )
 
 const (
@@ -24,6 +25,7 @@ var (
 
 type Request struct {
 	ReqType string `json:"reqType"`
+	Data    []byte `json:"data"`
 }
 
 type Buyer struct {
@@ -33,12 +35,29 @@ type Buyer struct {
 	ItemsBought int    `json:itemsBought`
 }
 
+type Product struct {
+	Name         string   `json:"name"`
+	ItemCategory int      `json:"itemCategory"`
+	ItemId       int      `json:"itemId"`
+	Condition    string   `json:"condition"`
+	Keywords     []string `json:"keywords"`
+	Price        int      `json:"price"`
+	SellerId     int      `json:"sellerId"`
+	Availability int      `json:"availability"`
+}
+
 var Buyers []Buyer
+
+type Products struct {
+	Products []Product `json:"products"`
+}
+
+var prod Products
 
 func main() {
 	getCustomerDatabases()
+	getProductDatabase()
 	fmt.Println("Buyer Database Updated")
-
 	//Setting up server part of the server
 	setUpListener()
 	defer server.Close()
@@ -54,9 +73,9 @@ func main() {
 	}
 }
 
-func getCustomerDatabases() {
+func getProductDatabase() {
 
-	fmt.Println("Getting Buyers database...")
+	fmt.Println("Getting product database...")
 	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
 
 	if err != nil {
@@ -66,6 +85,39 @@ func getCustomerDatabases() {
 	var req Request
 
 	req.ReqType = "getProducts"
+
+	reqBytes, _ := json.Marshal(req)
+	_, err = connection.Write(reqBytes)
+
+	buffer := make([]byte, RECEIVE_BUFFER)
+	mLen, err := connection.Read(buffer)
+
+	if err != nil {
+		fmt.Println("Error reading:", err.Error())
+	}
+	json.Unmarshal(buffer[:mLen], &prod.Products)
+
+	// for i := 0; i < len(prod.Products); i++ {
+	// 	fmt.Printf("%v \n", (prod.Products[i]))
+	// }
+
+	defer connection.Close()
+
+}
+
+func getCustomerDatabases() {
+
+	fmt.Println("Getting Buyers database...")
+	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+CUST_DATABASE_PORT)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var req Request
+
+	req.ReqType = "getBuyers"
+
 	reqBytes, _ := json.Marshal(req)
 	_, err = connection.Write(reqBytes)
 
@@ -76,9 +128,40 @@ func getCustomerDatabases() {
 		fmt.Println("Error reading:", err.Error())
 	}
 
-	println(string(buffer[:mLen]))
+	json.Unmarshal(buffer[:mLen], &Buyers)
 
-	// json.Unmarshal(buffer[:mLen], &Buyers)
+	// for i := 0; i < len(Buyers); i++ {
+	// 	fmt.Printf("%v \n", (Buyers[i]))
+	// }
+
+	defer connection.Close()
+
+}
+
+func addNewBuyer(newbuyer Buyer) {
+
+	fmt.Println("Adding a new buyer")
+	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+CUST_DATABASE_PORT)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var req Request
+	req.ReqType = "addBuyer"
+	req.Data, _ = json.Marshal(newbuyer)
+
+	reqBytes, _ := json.Marshal(req)
+	_, err = connection.Write(reqBytes)
+
+	buffer := make([]byte, RECEIVE_BUFFER)
+	mLen, err := connection.Read(buffer)
+
+	if err != nil {
+		fmt.Println("Error reading:", err.Error())
+	}
+
+	json.Unmarshal(buffer[:mLen], &Buyers)
 
 	// for i := 0; i < len(Buyers); i++ {
 	// 	fmt.Printf("%v \n", (Buyers[i]))
@@ -117,16 +200,44 @@ func processClient(connection net.Conn) {
 
 	fmt.Println("Request Type is :", req.ReqType)
 
-	// var marshalledBytes []byte
+	var marshalledBytes []byte
 
-	// if req.ReqType == "getSellers" {
-	// 	marshalledBytes, _ = json.Marshal(cust.Sellers)
-	// }
+	if req.ReqType == "addBuyer" {
+		var newbuyer Buyer
 
-	// if req.ReqType == "getBuyers" {
-	// 	marshalledBytes, _ = json.Marshal(cust.Buyers)
-	// }
+		json.Unmarshal(req.Data, &newbuyer)
 
-	// _, err = connection.Write(marshalledBytes)
+		now := time.Now()
+		newbuyer.BuyerID = int(now.UnixMilli())
+		newbuyer.ItemsBought = 0
+
+		// fmt.Printf("%v \n", newbuyer)
+
+		Buyers = append(Buyers, newbuyer)
+
+		marshalledBytes, _ = json.Marshal(string("200"))
+
+		addNewBuyer(newbuyer)
+
+	}
+
+	if req.ReqType == "loginBuyer" {
+		var newbuyer Buyer
+
+		json.Unmarshal(req.Data, &newbuyer)
+
+		for i := 0; i < len(Buyers); i++ {
+			if newbuyer.Name == Buyers[i].Name {
+				if newbuyer.Password == Buyers[i].Password {
+					marshalledBytes, _ = json.Marshal(string("200"))
+				} else {
+					marshalledBytes, _ = json.Marshal(string("500"))
+				}
+			}
+		}
+
+	}
+
+	_, err = connection.Write(marshalledBytes)
 	connection.Close()
 }

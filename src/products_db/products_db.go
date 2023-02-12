@@ -31,7 +31,7 @@ const (
 
 const RECEIVE_BUFFER = 102400
 
-var products Products
+var prod Products
 
 var (
 	server net.Listener
@@ -54,7 +54,7 @@ func main() {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	json.Unmarshal(byteValue, &products)
+	json.Unmarshal(byteValue, &prod)
 
 	fmt.Println("Json loaded into memory\n\n")
 
@@ -70,20 +70,6 @@ func main() {
 		fmt.Println("Client Connected...")
 		go processClient(connection)
 	}
-
-	// var new_cus Customer
-
-	// new_cus.Email = "neo2@neohere.in"
-	// new_cus.Name = "neo2"
-	// new_cus.Password = "qtpie3.14"
-
-	// cust.Customers = append(cust.Customers, new_cus)
-
-	// for i := 0; i < len(cust.Customers); i++ {
-	// 	fmt.Println(cust.Customers[i])
-	// }
-
-	// os.WriteFile("customers.json", marshalledBytes, fs.ModeAppend)
 }
 
 func processClient(connection net.Conn) {
@@ -105,7 +91,7 @@ func processClient(connection net.Conn) {
 	var marshalledBytes []byte
 
 	if req.ReqType == "getProducts" {
-		marshalledBytes, _ = json.Marshal(products)
+		marshalledBytes, _ = json.Marshal(prod.Products)
 	}
 
 	_, err = connection.Write(marshalledBytes)
@@ -124,11 +110,3 @@ func setUpListener() {
 	fmt.Println("Listening on " + SERVER_HOST + ":" + SERVER_PORT + "\n")
 	fmt.Println("Waiting for client... \n")
 }
-
-// func addCustomer() {
-
-// }
-
-// func getAllCustomers(){
-
-// }
