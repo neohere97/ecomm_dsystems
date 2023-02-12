@@ -10,7 +10,7 @@ import (
 const (
 	SERVER_HOST        = "localhost"
 	CUST_DATABASE_PORT = "9999"
-	PROD_DATABASE_PORT = "9997"
+	PROD_DATABASE_PORT = "9995"
 	SERVER_TYPE        = "tcp"
 	SERVER_PORT        = "9998"
 )
@@ -33,16 +33,6 @@ type Buyer struct {
 	ItemsBought int    `json:itemsBought`
 }
 
-type Seller struct {
-	Name        string `json:"name"`
-	Password    string `json:"passwd"`
-	SellerId    int    `json:sellerId`
-	ItemsSold   int    `json:itemsSold`
-	FeedbackPos int    `json:feedbackPos`
-	FeedbackNeg int    `json:feedbackNeg`
-}
-
-var Sellers []Seller
 var Buyers []Buyer
 
 func main() {
@@ -67,7 +57,7 @@ func main() {
 func getCustomerDatabases() {
 
 	fmt.Println("Getting Buyers database...")
-	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+CUST_DATABASE_PORT)
+	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
 
 	if err != nil {
 		panic(err)
@@ -75,7 +65,7 @@ func getCustomerDatabases() {
 
 	var req Request
 
-	req.ReqType = "getBuyers"
+	req.ReqType = "getProducts"
 	reqBytes, _ := json.Marshal(req)
 	_, err = connection.Write(reqBytes)
 
@@ -86,11 +76,13 @@ func getCustomerDatabases() {
 		fmt.Println("Error reading:", err.Error())
 	}
 
-	json.Unmarshal(buffer[:mLen], &Buyers)
+	println(string(buffer[:mLen]))
 
-	for i := 0; i < len(Buyers); i++ {
-		fmt.Printf("%v \n", (Buyers[i]))
-	}
+	// json.Unmarshal(buffer[:mLen], &Buyers)
+
+	// for i := 0; i < len(Buyers); i++ {
+	// 	fmt.Printf("%v \n", (Buyers[i]))
+	// }
 
 	defer connection.Close()
 
