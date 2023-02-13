@@ -265,46 +265,46 @@ func session(sessionNum int) {
 	newbuyer.Password = "12345"
 
 	if addNewBuyer(newbuyer) && logs {
-		// fmt.Printf("SessionId:%v , User Registered \n", sessionNum)
+		fmt.Printf("SessionId:%v , User Registered \n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , User Registration Failed \n", sessionNum)
+		fmt.Printf("SessionId:%v , User Registration Failed \n", sessionNum)
 	}
 
 	//Login
 	if login(newbuyer) && logs {
-		// fmt.Printf("SessionId:%v , Login Successful\n", sessionNum)
+		fmt.Printf("SessionId:%v , Login Successful\n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Login Failed\n", sessionNum)
+		fmt.Printf("SessionId:%v , Login Failed\n", sessionNum)
 	}
 
 	//Display Products
 	getAllProducts(&prods)
-	// fmt.Println("Here are the product listings...")
+	fmt.Println("Here are the product listings...")
 	for i := 0; i < len(prods); i++ {
-		// fmt.Printf("Product %v, %+v\n", i+1, prods[i])
+		fmt.Printf("Product %v, %+v\n", i+1, prods[i])
 	}
 	//Add Item to Shopping cart
 	cart = append(cart, prods[1])
 
 	//Display Shopping cart
-	// fmt.Println("1 Product added to cart")
+	fmt.Println("1 Product added to cart")
 	for i := 0; i < len(cart); i++ {
-		// fmt.Printf("Cart Item %v, %+v\n", i+1, cart[i])
+		fmt.Printf("Cart Item %v, %+v\n", i+1, cart[i])
 	}
 
 	//Remove Item from Shopping Cart
 	cart = cart[:len(cart)-1]
 	//Display Shopping cart
-	// fmt.Println("Product Removed from Shopping Cart. Current Cart..")
+	fmt.Println("Product Removed from Shopping Cart. Current Cart..")
 	for i := 0; i < len(cart); i++ {
-		// fmt.Printf("Cart Item %v, %+v\n", i+1, cart[i])
+		fmt.Printf("Cart Item %v, %+v\n", i+1, cart[i])
 	}
 
 	//Logout
 	if logout(newbuyer) && logs {
-		// fmt.Printf("SessionId:%v , Logout Successful\n", sessionNum)
+		fmt.Printf("SessionId:%v , Logout Successful\n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Logout Failed\n", sessionNum)
+		fmt.Printf("SessionId:%v , Logout Failed\n", sessionNum)
 	}
 
 	end := time.Now()

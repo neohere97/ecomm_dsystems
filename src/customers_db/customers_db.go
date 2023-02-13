@@ -57,6 +57,7 @@ type Request struct {
 	Data    []byte `json:"data"`
 }
 
+// -----------------------------------------------------------------------------------------
 func main() {
 	jsonFile, err := os.Open("customers.json")
 
@@ -87,12 +88,14 @@ func main() {
 	}
 }
 
+// -----------------------------------------------------------------------------------------
 func update_filedb() {
 	marshalledBytes, _ := json.Marshal(cust)
 
 	os.WriteFile("customers.json", marshalledBytes, fs.ModeAppend)
 }
 
+// -----------------------------------------------------------------------------------------
 func processClient(connection net.Conn) {
 
 	var req Request
@@ -149,6 +152,7 @@ func processClient(connection net.Conn) {
 	connection.Close()
 }
 
+// -----------------------------------------------------------------------------------------
 func setUpListener() {
 	fmt.Println("Starting Server...\n")
 
@@ -162,10 +166,4 @@ func setUpListener() {
 	fmt.Println("Waiting for client... \n")
 }
 
-// func addCustomer() {
-
-// }
-
-// func getAllCustomers(){
-
-// }
+// -----------------------------------------------------------------------------------------

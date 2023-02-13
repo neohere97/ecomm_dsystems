@@ -63,6 +63,7 @@ type Products struct {
 
 var prod Products
 
+// -----------------------------------------------------------------------------------------
 func main() {
 
 	getCustomerDatabases()
@@ -83,6 +84,7 @@ func main() {
 	}
 }
 
+// -----------------------------------------------------------------------------------------
 func getProductDatabase() {
 
 	fmt.Println("Getting product database...")
@@ -115,6 +117,7 @@ func getProductDatabase() {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func getCustomerDatabases() {
 
 	fmt.Println("Getting Sellers database...")
@@ -146,6 +149,7 @@ func getCustomerDatabases() {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func addNewSeller(newseller Seller) {
 
 	fmt.Println("Adding a new Seller")
@@ -183,6 +187,7 @@ func addNewSeller(newseller Seller) {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func addNewProduct(newproduct Product) {
 
 	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
@@ -219,6 +224,7 @@ func addNewProduct(newproduct Product) {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func setUpListener() {
 	fmt.Println("Starting Server...\n")
 
@@ -232,6 +238,7 @@ func setUpListener() {
 	fmt.Println("Waiting for client... \n")
 }
 
+// -----------------------------------------------------------------------------------------
 func processClient(connection net.Conn) {
 
 	var req Request
@@ -350,6 +357,7 @@ func processClient(connection net.Conn) {
 	connection.Close()
 }
 
+// -----------------------------------------------------------------------------------------
 func updateProduct(newproduct Product) {
 
 	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
@@ -371,3 +379,5 @@ func updateProduct(newproduct Product) {
 	defer connection.Close()
 
 }
+
+// -----------------------------------------------------------------------------------------

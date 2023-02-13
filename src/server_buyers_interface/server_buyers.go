@@ -61,6 +61,7 @@ type Products struct {
 
 var prod Products
 
+// -----------------------------------------------------------------------------------------
 func main() {
 	getCustomerDatabases()
 	getProductDatabase()
@@ -80,6 +81,7 @@ func main() {
 	}
 }
 
+// -----------------------------------------------------------------------------------------
 func getProductDatabase() {
 
 	fmt.Println("Getting product database...")
@@ -112,6 +114,7 @@ func getProductDatabase() {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func getCustomerDatabases() {
 
 	fmt.Println("Getting Buyers database...")
@@ -145,6 +148,7 @@ func getCustomerDatabases() {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func addNewBuyer(newbuyer Buyer) {
 
 	fmt.Println("Adding a new buyer")
@@ -178,6 +182,7 @@ func addNewBuyer(newbuyer Buyer) {
 
 }
 
+// -----------------------------------------------------------------------------------------
 func setUpListener() {
 	fmt.Println("Starting Server...\n")
 
@@ -191,6 +196,7 @@ func setUpListener() {
 	fmt.Println("Waiting for client... \n")
 }
 
+// -----------------------------------------------------------------------------------------
 func processClient(connection net.Conn) {
 
 	var req Request
@@ -270,3 +276,5 @@ func processClient(connection net.Conn) {
 	_, err = connection.Write(marshalledBytes)
 	connection.Close()
 }
+
+// -----------------------------------------------------------------------------------------

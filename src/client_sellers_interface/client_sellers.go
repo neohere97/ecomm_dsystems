@@ -270,16 +270,16 @@ func session(sessionNum int) {
 	newseller.FeedbackPos = 0
 
 	if addNewSeller(&newseller) && logs {
-		// fmt.Printf("SessionId:%v , Seller Registered \n", sessionNum)
+		fmt.Printf("SessionId:%v , Seller Registered \n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Seller Registration Failed \n", sessionNum)
+		fmt.Printf("SessionId:%v , Seller Registration Failed \n", sessionNum)
 	}
 
 	//Login New Seller
 	if login(newseller) && logs {
-		// fmt.Printf("SessionId:%v , Login Successful\n", sessionNum)
+		fmt.Printf("SessionId:%v , Login Successful\n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Login Failed\n", sessionNum)
+		fmt.Printf("SessionId:%v , Login Failed\n", sessionNum)
 	}
 
 	//Put One item for sale
@@ -295,33 +295,33 @@ func session(sessionNum int) {
 	newproduct.Price = 87
 
 	if addNewProduct(&newproduct) && logs {
-		// fmt.Printf("SessionId:%v , Product Added \n", sessionNum)
+		fmt.Printf("SessionId:%v , Product Added \n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Product Additon Failed \n", sessionNum)
+		fmt.Printf("SessionId:%v , Product Additon Failed \n", sessionNum)
 	}
 
 	//Update Sale Price
 	newproduct.Price = 8700
 	newproduct.Availability -= 1
 	if updateProduct(newproduct) && logs {
-		// fmt.Printf("SessionId:%v , Product Updated \n", sessionNum)
+		fmt.Printf("SessionId:%v , Product Updated \n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Product Update Failed \n", sessionNum)
+		fmt.Printf("SessionId:%v , Product Update Failed \n", sessionNum)
 	}
 
 	//Display items on sale
 	getSellerProducts(newseller, &sellerprods)
 
-	// fmt.Printf("Below are the products on sale by the seller\n")
+	fmt.Printf("Below are the products on sale by the seller\n")
 	for i := 0; i < len(sellerprods); i++ {
-		// fmt.Printf("%+v \n", sellerprods[i])
+		fmt.Printf("%+v \n", sellerprods[i])
 	}
 
 	//Logout Seller
 	if logout(newseller) && logs {
-		// fmt.Printf("SessionId:%v , Logout Successful\n", sessionNum)
+		fmt.Printf("SessionId:%v , Logout Successful\n", sessionNum)
 	} else {
-		// fmt.Printf("SessionId:%v , Logout Failed\n", sessionNum)
+		fmt.Printf("SessionId:%v , Logout Failed\n", sessionNum)
 	}
 
 	end := time.Now()
