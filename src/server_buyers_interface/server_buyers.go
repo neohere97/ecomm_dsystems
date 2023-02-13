@@ -1,3 +1,10 @@
+//  /***************************************************************************
+//   * Distributed Systems assignment 1
+//   * Author: Chinmay Shalawadi
+//   * Institution: University of Colorado Boulder
+//   * Mail id: chsh1552@colorado.edu
+//   ***************************************************************************/
+
 package main
 
 import (
@@ -217,7 +224,7 @@ func processClient(connection net.Conn) {
 
 		marshalledBytes, _ = json.Marshal(string("200"))
 
-		addNewBuyer(newbuyer)
+		// addNewBuyer(newbuyer)
 
 	}
 

@@ -1,3 +1,10 @@
+//  /***************************************************************************
+//   * Distributed Systems assignment 1
+//   * Author: Chinmay Shalawadi
+//   * Institution: University of Colorado Boulder
+//   * Mail id: chsh1552@colorado.edu
+//   ***************************************************************************/
+
 package main
 
 import (

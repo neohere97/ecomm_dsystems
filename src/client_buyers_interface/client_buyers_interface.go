@@ -60,6 +60,30 @@ type Product struct {
 var logs bool = true
 var sessionLatencies []int
 
+func perfTesting() {
+	now := time.Now()
+	epoch := now.UnixMilli()
+
+	for i := 0; i < 1000; i++ {
+
+		//CreateNewUser
+		var newbuyer Buyer
+		newbuyer.BuyerID = 0
+		newbuyer.Name = "Mona"
+		newbuyer.Password = "12345"
+
+		if addNewBuyer(newbuyer) && logs {
+			// fmt.Printf("SessionId:%v , User Registered \n", sessionNum)
+		} else {
+			// fmt.Printf("SessionId:%v , User Registration Failed \n", sessionNum)
+		}
+	}
+
+	end := time.Now()
+	endepoch := end.UnixMilli()
+	fmt.Printf("%vms\n", (endepoch - epoch))
+}
+
 // --------------------------main--------------------------------------------------
 func main() {
 	count := 0
@@ -67,10 +91,11 @@ func main() {
 	for {
 		input := bufio.NewScanner(os.Stdin)
 		input.Scan()
-		for i := 0; i < 100; i++ {
-			count++
+		for i := 0; i < 200; i++ {
+			// go perfTesting()
+			// count++
 			go session(count)
-			time.Sleep(5 * time.Millisecond)
+			// time.Sleep(5 * time.Millisecond)
 		}
 
 	}
