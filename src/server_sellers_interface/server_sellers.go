@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 )
 
 const (
@@ -167,9 +168,45 @@ func addNewSeller(newseller Seller) {
 
 	json.Unmarshal(buffer[:mLen], &Sellers)
 
-	for i := 0; i < len(Sellers); i++ {
-		fmt.Printf("%v \n", (Sellers[i]))
+	// for i := 0; i < len(Sellers); i++ {
+	// 	fmt.Printf("%v \n", (Sellers[i]))
+	// }
+
+	defer connection.Close()
+
+}
+
+func addNewProduct(newproduct Product) {
+
+	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
+
+	if err != nil {
+		panic(err)
 	}
+
+	var req Request
+	req.ReqType = "addProduct"
+	req.Data, _ = json.Marshal(newproduct)
+
+	reqBytes, _ := json.Marshal(req)
+	_, err = connection.Write(reqBytes)
+
+	if err != nil {
+		fmt.Println("Error writing:", err.Error())
+	}
+
+	buffer := make([]byte, RECEIVE_BUFFER)
+	mLen, err := connection.Read(buffer)
+
+	if err != nil {
+		fmt.Println("Error reading:", err.Error())
+	}
+
+	json.Unmarshal(buffer[:mLen], &prod)
+
+	// for i := 0; i < len(prod.Products); i++ {
+	// 	fmt.Printf("%v \n", (prod.Products[i]))
+	// }
 
 	defer connection.Close()
 
@@ -211,18 +248,119 @@ func processClient(connection net.Conn) {
 
 		json.Unmarshal(req.Data, &new_seller)
 
-		fmt.Printf("%v \n", new_seller)
+		now := time.Now()
+		new_seller.SellerId = int(now.UnixMilli())
+		new_seller.ItemsSold = 0
+		new_seller.FeedbackNeg = 0
+		new_seller.FeedbackPos = 0
 
 		Sellers = append(Sellers, new_seller)
 
-		fmt.Printf("%v \n", Sellers)
-
-		marshalledBytes, _ = json.Marshal(string("Seller has been added..."))
+		marshalledBytes, _ = json.Marshal(new_seller)
 
 		addNewSeller(new_seller)
 
 	}
 
+	if req.ReqType == "loginSeller" {
+		var newseller Seller
+
+		json.Unmarshal(req.Data, &newseller)
+
+		for i := 0; i < len(Sellers); i++ {
+			if newseller.SellerId == Sellers[i].SellerId {
+				if newseller.Password == Sellers[i].Password {
+					marshalledBytes, _ = json.Marshal(string("200"))
+				} else {
+					marshalledBytes, _ = json.Marshal(string("500"))
+				}
+			}
+		}
+
+	}
+	if req.ReqType == "logoutSeller" {
+		var newseller Seller
+
+		json.Unmarshal(req.Data, &newseller)
+
+		for i := 0; i < len(Sellers); i++ {
+			if newseller.SellerId == Sellers[i].SellerId {
+				if newseller.Password == Sellers[i].Password {
+					marshalledBytes, _ = json.Marshal(string("200"))
+				} else {
+					marshalledBytes, _ = json.Marshal(string("500"))
+				}
+			}
+		}
+
+	}
+
+	if req.ReqType == "addProduct" {
+		var newproduct Product
+
+		json.Unmarshal(req.Data, &newproduct)
+		now := time.Now()
+		newproduct.ItemId = int(now.UnixMilli())
+
+		prod.Products = append(prod.Products, newproduct)
+		marshalledBytes, _ = json.Marshal(newproduct)
+
+		go addNewProduct(newproduct)
+	}
+
+	if req.ReqType == "updateProduct" {
+		var newproduct Product
+
+		json.Unmarshal(req.Data, &newproduct)
+
+		marshalledBytes, _ = json.Marshal(string("500"))
+
+		for i := 0; i < len(prod.Products); i++ {
+			if prod.Products[i].ItemId == newproduct.ItemId {
+				prod.Products[i] = newproduct
+				marshalledBytes, _ = json.Marshal(string("200"))
+				go updateProduct(newproduct)
+				break
+			}
+		}
+	}
+
+	if req.ReqType == "getSellerProducts" {
+		var seller Seller
+		var prods []Product
+
+		json.Unmarshal(req.Data, &seller)
+
+		for i := 0; i < len(prod.Products); i++ {
+			if prod.Products[i].SellerId == seller.SellerId {
+				prods = append(prods, prod.Products[i])
+			}
+		}
+		marshalledBytes, _ = json.Marshal(prods)
+	}
+
 	_, err = connection.Write(marshalledBytes)
 	connection.Close()
+}
+
+func updateProduct(newproduct Product) {
+
+	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+PROD_DATABASE_PORT)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var req Request
+	req.ReqType = "updateProduct"
+	req.Data, _ = json.Marshal(newproduct)
+
+	reqBytes, _ := json.Marshal(req)
+	_, err = connection.Write(reqBytes)
+
+	if err != nil {
+		fmt.Println("Error writing:", err.Error())
+	}
+	defer connection.Close()
+
 }

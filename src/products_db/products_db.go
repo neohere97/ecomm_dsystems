@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"net"
 	"os"
@@ -40,6 +41,7 @@ var (
 
 type Request struct {
 	ReqType string `json:"reqType"`
+	Data    []byte `json:"data"`
 }
 
 func main() {
@@ -94,8 +96,46 @@ func processClient(connection net.Conn) {
 		marshalledBytes, _ = json.Marshal(prod.Products)
 	}
 
+	if req.ReqType == "addProduct" {
+		var newproduct Product
+
+		json.Unmarshal(req.Data, &newproduct)
+
+		fmt.Printf("%v \n", newproduct)
+
+		prod.Products = append(prod.Products, newproduct)
+
+		marshalledBytes, _ = json.Marshal(prod.Products)
+
+		update_filedb()
+	}
+
+	if req.ReqType == "updateProduct" {
+		var newproduct Product
+
+		json.Unmarshal(req.Data, &newproduct)
+
+		marshalledBytes, _ = json.Marshal(string("500"))
+
+		for i := 0; i < len(prod.Products); i++ {
+			if prod.Products[i].ItemId == newproduct.ItemId {
+				prod.Products[i] = newproduct
+				marshalledBytes, _ = json.Marshal(string("200"))
+				fmt.Println("product updated")
+				break
+			}
+		}
+		update_filedb()
+	}
+
 	_, err = connection.Write(marshalledBytes)
 	connection.Close()
+}
+
+func update_filedb() {
+	marshalledBytes, _ := json.Marshal(prod)
+
+	os.WriteFile("products.json", marshalledBytes, fs.ModeAppend)
 }
 
 func setUpListener() {

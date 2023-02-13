@@ -1,15 +1,6 @@
 {
   "Sellers": [
-    {
-      "name": "ChinmaySeller",
-      "passwd": "12345",
-      "SellerId": 213,
-      "ItemsSold": 0,
-      "FeedbackPos": 0,
-      "FeedbackNeg": 0
-    }
+    
   ],
-  "buyers": [
-   
-  ]
+  "buyers": []
 }

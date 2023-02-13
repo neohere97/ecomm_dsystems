@@ -238,6 +238,28 @@ func processClient(connection net.Conn) {
 
 	}
 
+	if req.ReqType == "logoutBuyer" {
+		var newbuyer Buyer
+
+		json.Unmarshal(req.Data, &newbuyer)
+
+		for i := 0; i < len(Buyers); i++ {
+			if newbuyer.Name == Buyers[i].Name {
+				if newbuyer.Password == Buyers[i].Password {
+					marshalledBytes, _ = json.Marshal(string("200"))
+				} else {
+					marshalledBytes, _ = json.Marshal(string("500"))
+				}
+			}
+		}
+
+	}
+
+	if req.ReqType == "getProducts" {
+
+		marshalledBytes, _ = json.Marshal(prod.Products)
+	}
+
 	_, err = connection.Write(marshalledBytes)
 	connection.Close()
 }

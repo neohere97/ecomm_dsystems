@@ -131,8 +131,6 @@ func processClient(connection net.Conn) {
 
 		json.Unmarshal(req.Data, &new_seller)
 
-		fmt.Printf("%v \n", new_seller)
-
 		cust.Sellers = append(cust.Sellers, new_seller)
 
 		marshalledBytes, _ = json.Marshal(cust.Sellers)
