@@ -272,7 +272,7 @@ func processClient(connection net.Conn) {
 
 		marshalledBytes, _ = json.Marshal(new_seller)
 
-		addNewSeller(new_seller)
+		// addNewSeller(new_seller)
 
 	}
 

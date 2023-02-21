@@ -59,19 +59,115 @@ type Product struct {
 
 var logs bool = true
 
-// --------------------------main--------------------------------------------------
-func main() {
-	count := 0
+func perfTestingResponse(sessionnum int) {
+	avg := 0
+	for i := 0; i < 10; i++ {
 
-	for {
-		input := bufio.NewScanner(os.Stdin)
-		input.Scan()
-		for i := 0; i < 100; i++ {
-			count++
-			go session(count)
-			time.Sleep(50 * time.Millisecond)
+		now := time.Now()
+		epoch := now.UnixMilli()
+
+		var newseller Seller
+
+		var nameAttachment string
+		nameAttachment = strconv.Itoa(int(epoch))
+		newseller.SellerId = 0
+		newseller.Name = "SK Holdings" + nameAttachment[7:]
+		newseller.Password = "qwerty"
+		newseller.ItemsSold = 0
+		newseller.FeedbackNeg = 0
+		newseller.FeedbackPos = 0
+
+		if addNewSeller(&newseller) && logs {
+			// fmt.Printf("SessionId:%v , User Registered \n", sessionNum)
+		} else {
+			// fmt.Printf("SessionId:%v , User Registration Failed \n", sessionNum)
+		}
+		end := time.Now()
+		endepoch := end.UnixMilli()
+
+		avg = avg + int(endepoch-epoch)
+
+	}
+	fmt.Printf("\n***************************************\n")
+	fmt.Printf("Instance-%v Average Response Time is %vms\n", sessionnum, avg/10)
+	fmt.Printf("***************************************\n")
+
+}
+
+func perfTestingThroughput(sessionnum int) {
+
+	now := time.Now()
+	epoch := now.UnixMilli()
+	for i := 0; i < 1000; i++ {
+		var newseller Seller
+
+		var nameAttachment string
+		nameAttachment = strconv.Itoa(int(epoch))
+		newseller.SellerId = 0
+		newseller.Name = "SK Holdings" + nameAttachment[7:]
+		newseller.Password = "qwerty"
+		newseller.ItemsSold = 0
+		newseller.FeedbackNeg = 0
+		newseller.FeedbackPos = 0
+
+		if addNewSeller(&newseller) && logs {
+			// fmt.Printf("SessionId:%v , User Registered \n", sessionNum)
+		} else {
+			// fmt.Printf("SessionId:%v , User Registration Failed \n", sessionNum)
 		}
 
+	}
+	end := time.Now()
+	endepoch := end.UnixMilli()
+	fmt.Printf("\n***************************************\n")
+	fmt.Printf("Instance-%v Time taken for 1000 operations is %vms\n", sessionnum, endepoch-epoch)
+	fmt.Printf("***************************************\n")
+
+}
+
+// --------------------------main--------------------------------------------------
+func main() {
+	for {
+		fmt.Println("\n1. Run Average Response Time Test")
+		fmt.Println("2. Run Average Server Throughput Test")
+		fmt.Println("3. Run Session Test")
+
+		fmt.Printf("\n\nPlease select an option:\n")
+		var i int
+		fmt.Scanf("%d", &i)
+
+		fmt.Printf("\n\nPlease give number of users (1-100):")
+		var j int
+		fmt.Scanf("%d", &j)
+
+		if i == 1 {
+
+			fmt.Printf("\n\nPress Enter to start Test")
+			input := bufio.NewScanner(os.Stdin)
+			input.Scan()
+			fmt.Printf("\n\nTest Running....")
+			for k := 0; k < j; k++ {
+				go perfTestingResponse(k)
+			}
+
+		} else if i == 2 {
+			fmt.Printf("\n\nPress Enter to start Test")
+			input := bufio.NewScanner(os.Stdin)
+			input.Scan()
+			fmt.Printf("\n\nTest Running....")
+			for k := 0; k < j; k++ {
+				go perfTestingThroughput(k)
+			}
+
+		} else if i == 3 {
+			fmt.Printf("\n\nPress Enter to start Test")
+			input := bufio.NewScanner(os.Stdin)
+			input.Scan()
+			fmt.Printf("\n\nTest Running....")
+			for k := 0; k < j; k++ {
+				go session(k)
+			}
+		}
 	}
 }
 
